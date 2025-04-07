@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4CAF50;
+            --background-color: #F8F9FA;
+            --text-color: #2C3E50;
+            --border-color: #E0E0E0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 30px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .result-section {
+            flex: 1;
+            padding: 20px;
+            min-height: 100%;
+        }
+
+        .result-heading {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            opacity: 0.7;
+        }
+
+        .result-heading:before {
+            content: "→";
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #5A52D9;
+        }
+
+        .result {
+            padding: 20px;
+            background-color: #F0F7FF;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            height: 100%;
+        }
+
+        .result h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .probability-bar {
+            margin: 15px 0;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            transition: width 0.5s ease;
+        }
+
+        .error {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #FFEBEE;
+            color: #C62828;
+            border-radius: 8px;
+            border-left: 4px solid #C62828;
+            font-size: 0.95rem;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .high-risk {
+            background-color: #FFF3E0;
+            color: #E65100;
+            border-left: 4px solid #E65100;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .moderate-risk {
+            background-color: #FFF8E1;
+            color: #F57F17;
+            border-left: 4px solid #F57F17;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .low-risk {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #2E7D32;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 20px;
+            }
+
+            .result-section {
+                padding-top: 20px;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input[type="number"] {
+                padding: 8px;
+                font-size: 0.95rem;
+            }
+
+            input[type="submit"] {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+
+            .result {
+                padding: 15px;
+            }
+
+            .result h3 {
+                font-size: 1.1rem;
+            }
+
+            .probability-bar {
+                height: 6px;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px auto;
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+
+            label {
+                font-size: 0.85rem;
+            }
+
+            input[type="number"] {
+                padding: 7px;
+                font-size: 0.9rem;
+            }
+
+            .result {
+                padding: 12px;
+            }
+
+            .result h3 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h2>PCOS Predictor</h2>
+            <form method="POST">
+                {% for feature in features %}
+                <div class="form-group">
+                    <label>{{ feature }}</label>
+                    <input type="number" step="any" name="{{ feature }}" required 
+                           value="{{ request.form.get(feature, '') }}">
+                </div>
+                {% endfor %}
+                <input type="submit" value="Predict">
+            </form>
+
+            {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="result-section">
+            <h2 class="result-heading">Results</h2>
+            {% if result %}
+            <div class="result">
+                <h3>Prediction Result</h3>
+                <p>Diagnosis: {{ result }}</p>
+                <div class="probability-bar">
+                    <div class="probability-fill" style="width: {{ prob_1 * 100 }}%"></div>
+                </div>
+                <p>Probability of PCOS: {{ "%.2f"|format(prob_1 * 100) }}%</p>
+                <p>Probability of No PCOS: {{ "%.2f"|format(prob_0 * 100) }}%</p>
+                
+                <div class="note">
+                    {% if prob_1 >= 0.7 %}
+                    <p class="high-risk">⚠️ High Risk Alert: Your PCOS probability is significantly elevated ({{ "%.2f"|format(prob_1 * 100) }}%). Please consult with a healthcare professional for proper evaluation and management. Early intervention is crucial for managing PCOS effectively.</p>
+                    {% elif prob_1 >= 0.4 %}
+                    <p class="moderate-risk">⚠️ Moderate Risk: Your PCOS probability is {{ "%.2f"|format(prob_1 * 100) }}%. It's recommended to schedule a consultation with your healthcare provider for further evaluation and monitoring.</p>
+                    {% else %}
+                    <p class="low-risk">ℹ️ Low Risk: Your PCOS probability is {{ "%.2f"|format(prob_1 * 100) }}%. While the risk appears low, regular health check-ups are still recommended. If you experience any symptoms, please consult your healthcare provider.</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
