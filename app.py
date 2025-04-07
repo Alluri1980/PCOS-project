@@ -4,7 +4,10 @@ import joblib
 from pcos_model_on_pynq import score
 import os
 
-app = Flask(__name__, static_folder='static', static_url_path='/static')
+app = Flask(__name__, 
+            static_folder='static',
+            static_url_path='/static',
+            template_folder='templates')
 
 # Load necessary files
 top_20_features = joblib.load("selected_features.joblib")
