@@ -2,8 +2,9 @@ from flask import Flask, render_template, request
 import numpy as np
 import joblib
 from pcos_model_on_pynq import score
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # Load necessary files
 top_20_features = joblib.load("selected_features.joblib")
@@ -34,5 +35,9 @@ def index():
 
     return render_template('index.html', features=top_20_features)
 
+# This is required for Vercel
 if __name__ == '__main__':
     app.run(debug=True)
+else:
+    # This is required for Vercel
+    app = app
